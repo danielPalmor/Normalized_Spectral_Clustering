@@ -367,7 +367,6 @@ int main(int argc, char *argv[])
             result = jacobi(X,dim);
             printMatrix(result,numOfPoints + 1, dim);
             freeMatrix(result);
-
         }
         else
         {
@@ -378,37 +377,5 @@ int main(int argc, char *argv[])
     }
     freeMatrix(X);
     return 0;
-
-    /*double *Aarray = NULL, *Xarray = NULL, *array = NULL;
-    double **A = matrixAllocation(3,3,&Aarray);
-    double **jacob, **matrix;
-    double **X = matrixAllocation(10,2,&Xarray);
-
-    A[0][0] = 3;
-    A[0][1] = 2;
-    A[0][2] = 4;
-    A[1][0] = 2;
-    A[1][1] = 0;
-    A[1][2] = 2;
-    A[2][0] = 4;
-    A[2][1] = 2;
-    A[2][2] = 3;
-    jacob = jacobi(A,&Aarray,3);
-    printMatrix(jacob, 4, 3);*/
-
-    /*X[0][0] = -5.056; X[0][1] = 11.011;
-    X[1][0] = -6.409; X[1][1] = -7.962;
-    X[2][0] = 5.694; X[2][1] = 9.606;
-    X[3][0] = 6.606; X[3][1] = 9.396;
-    X[4][0] = -6.772; X[4][1] = -5.727;
-    X[5][0] = -4.498; X[5][1] = 8.399;
-    X[6][0] = -4.985; X[6][1] = 9.076;
-    X[7][0] = 4.424; X[7][1] = 8.819;
-    X[8][0] = -7.595; X[8][1] = -7.211;
-    X[9][0] = -4.198; X[9][1] = 8.371;
-
-
-    matrix = jacobi(lNorm(X,&array,10,2),&Xarray,10);
-    printMatrix(matrix, 10, 10);*/
 }
 

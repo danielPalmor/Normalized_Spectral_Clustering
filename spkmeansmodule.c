@@ -4,11 +4,6 @@
 #include <stdlib.h>
 #include "spkmeans.h"
 
-/**
-  NEW CHANGES HERE
-  IDEAS: include MatrixOperations to prevent mult code
-*/
-
 
 static PyObject* fit(PyObject *self, PyObject *args)
 {
