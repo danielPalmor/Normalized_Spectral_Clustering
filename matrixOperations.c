@@ -95,9 +95,9 @@ void printMatrix(double **matrix, int numOfPoints, int dim)
         for (j = 0; j < dim ; j++)
         {
             if (j == dim - 1)
-                printf("%.4lf\n", matrix[i][j]);
+                printf("%.4f\n", matrix[i][j]);
             else
-                printf("%.4lf,", matrix[i][j]);
+                printf("%.4f,", matrix[i][j]);
         }
     }
 }
