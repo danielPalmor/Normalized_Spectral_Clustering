@@ -85,7 +85,7 @@ def kmeans_pp(k, goal, file_name):
 
 def main(argv):
 
-    if len(argv) != 3 or not argv[1].isnumeric():
+    if len(argv) != 4 or not argv[1].isnumeric():
         print("Invalid Input!")
         return 1
 
@@ -93,8 +93,8 @@ def main(argv):
         print("Invalid Input!")
         return 1
 
-    if argv[3] != "wam" or argv[3] != "ddg" or argv[3] != "lnorm" \
-            or argv[3] != "jacobi" or argv[3] != "spk":
+    if argv[2] != "wam" and argv[2] != "ddg" and argv[2] != "lnorm" \
+            and argv[2] != "jacobi" and argv[2] != "spk":
         print("Invalid Input!")
         return 1
 
