@@ -2,6 +2,12 @@
 #include <stdlib.h>
 #include "matrixOperations.h"
 
+/**
+ * This function allocates memory for a matrix
+ * @param numOfPoints The number of points (rows)
+ * @param dim The point's dimension (columns)
+ * @return The matrix
+ */
 double **matrixAllocation(int numOfPoints, int dim)
 {
     int i;
@@ -26,6 +32,15 @@ double **matrixAllocation(int numOfPoints, int dim)
     return matrix;
 }
 
+/**
+ * This functions sums/subtracts two matrices
+ * @param firstMatrix The first matrix
+ * @param secondMatrix The second matrix
+ * @param sign 1 for sum , -1 for subtraction
+ * @param numOfPoints The number of points
+ * @param dim The point's dimension
+ * @return The sum/subtraction of the matrices
+ */
 double **matrixSum(double **firstMatrix,double **secondMatrix,int sign, double numOfPoints, double dim)
 {
     int i,j;
@@ -41,6 +56,14 @@ double **matrixSum(double **firstMatrix,double **secondMatrix,int sign, double n
     return matrix;
 }
 
+/**
+ * This function multiplies two matrices
+ * @param firstMatrix The first matrix
+ * @param secondMatrix The second matrix
+ * @param rowFirstMat The rows of the first matrix
+ * @param colFirstRowSecond The columns of the first matrix and the rows of the second matrix
+ * @param colSecondMat The columns of the second matrix
+ */
 void matrixMult(double **firstMatrix, double **secondMatrix, int rowFirstMat, int colFirstRowSecond, int colSecondMat)
 {
     int i,j,m,k;
@@ -56,6 +79,12 @@ void matrixMult(double **firstMatrix, double **secondMatrix, int rowFirstMat, in
     freeMatrix(multMatrix);
 }
 
+/**
+ * This function sorts a given matrix by it's eigenvalues
+ * @param matrix The matrix of eigenvectors. The first row contains the eigenvalues
+ * @param numOfPoints The number of points
+ * @param dim The point's dimension
+ */
 void sortByEigenValues(double **matrix, int numOfPoints, int dim)
 {
     int i, j, k, maxCol;
@@ -81,12 +110,22 @@ void sortByEigenValues(double **matrix, int numOfPoints, int dim)
     }
 }
 
+/**
+ * This function frees memory of a given matrix
+ * @param matrix The matrix
+ */
 void freeMatrix(double **matrix)
 {
     free(matrix[0]);
     free(matrix);
 }
 
+/**
+ * This function prints a given matrix
+ * @param matrix The matrix
+ * @param numOfPoints The number of points
+ * @param dim The point's dimension
+ */
 void printMatrix(double **matrix, int numOfPoints, int dim)
 {
     int i,j;

@@ -3,11 +3,15 @@
 #include <Python.h>
 #include <stdlib.h>
 #include "spkmeans.h"
+#include "matrixOperations.h"
+
+#define EPSILON 0
+#define MAX_ITER 300
 
 
 static PyObject* fit(PyObject *self, PyObject *args)
 {
-    double **xMatrix, *xArray;
+    double **xMatrix;
     double **result;
 
     int k, goal, numOfPoints, dim;
@@ -20,24 +24,7 @@ static PyObject* fit(PyObject *self, PyObject *args)
     if (!PyArg_ParseTuple(args, "Oiiii", &py_x_matrix, &goal, &numOfPoints, &dim, &k))
         return NULL;
 
-    xArray = calloc(numOfPoints * dim, sizeof(double));
-    if(xArray == NULL)
-    {
-        printf("An Error Has Occurred");
-        exit(1);
-    }
-    xMatrix = calloc(numOfPoints, sizeof(double*));
-    if (xMatrix == NULL)
-    {
-        printf("An Error Has Occurred");
-        free(xArray);
-        exit(1);
-    }
-
-    for (i = 0; i < numOfPoints; i++)
-    {
-        xMatrix[i] = xArray + i * dim;
-    }
+    xMatrix = matrixAllocation(numOfPoints, dim);
 
     for (i = 0; i < numOfPoints; i++)
     {
@@ -97,24 +84,19 @@ static PyObject* fit(PyObject *self, PyObject *args)
         }
     }
 
-    free(result[0]);
-    free(result);
-    free(xArray);
-    free(xMatrix);
+    freeMatrix(result);
+    freeMatrix(xMatrix);
     return Py_BuildValue("O",py_result);
 }
 
 static PyObject* kmeans_fit(PyObject *self, PyObject *args)
 {
-    const int MAX_ITER = 300;
-    const double EPS = 0;
 
     PyObject* matrix_points;
     PyObject* initial_centroids;
 
     int i, k, dim, numOfPoints;
     double **cMatrix, **cMatrixInitialCentroids;
-    double *cArray, *cArrayInitialCentroids;
 
     double **result;
     PyObject *centroids;
@@ -123,45 +105,8 @@ static PyObject* kmeans_fit(PyObject *self, PyObject *args)
     if (!PyArg_ParseTuple(args, "iOOii", &k, &matrix_points, &initial_centroids, &dim, &numOfPoints))
         return NULL;
 
-    cArray = calloc(numOfPoints * dim, sizeof(double));
-    if(cArray == NULL)
-    {
-        printf("An Error Has Occurred");
-        exit(1);
-    }
-    cMatrix = calloc(numOfPoints, sizeof(double*));
-    if(cMatrix == NULL)
-    {
-        free(cArray);
-        printf("An Error Has Occurred");
-        exit(1);
-    }
-
-    for (i = 0; i < numOfPoints; i++) {
-        cMatrix[i] = cArray + i * dim;
-    }
-
-    cArrayInitialCentroids = calloc(k * dim, sizeof(double));
-    if(cArrayInitialCentroids == NULL)
-    {
-        free(cArray);
-        free(cMatrix);
-        printf("An Error Has Occurred");
-        exit(1);
-    }
-    cMatrixInitialCentroids = calloc(k, sizeof(double*));
-    if(cMatrixInitialCentroids == NULL)
-    {
-        free(cArrayInitialCentroids);
-        free(cArray);
-        free(cMatrix);
-        printf("An Error Has Occurred");
-        exit(1);
-    }
-
-    for (i = 0; i < k; i++) {
-        cMatrixInitialCentroids[i] = cArrayInitialCentroids + i * dim;
-    }
+    cMatrix = matrixAllocation(numOfPoints, dim);
+    cMatrixInitialCentroids = matrixAllocation(k, dim);
 
     for (i = 0; i < numOfPoints; i++)
     {
@@ -179,8 +124,8 @@ static PyObject* kmeans_fit(PyObject *self, PyObject *args)
         }
     }
 
-    result = kmeans(k, MAX_ITER, EPS, cMatrix, cMatrixInitialCentroids,
-                    dim, numOfPoints);
+    result = kmeans(k, MAX_ITER, EPSILON, cMatrix, cMatrixInitialCentroids,
+                    numOfPoints, dim);
 
     centroids =  PyList_New(k*dim);
     for (i = 0; i < k; i++)
@@ -191,8 +136,8 @@ static PyObject* kmeans_fit(PyObject *self, PyObject *args)
             PyList_SetItem(centroids, (i*dim)+j,PyFloat_FromDouble(result[i][j]));
         }
     }
-    free(cMatrixInitialCentroids);
-    free(cArrayInitialCentroids);
+
+    freeMatrix(cMatrixInitialCentroids);
     return Py_BuildValue("O",centroids);
 }
 

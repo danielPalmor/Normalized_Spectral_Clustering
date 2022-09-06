@@ -286,8 +286,6 @@ int main(int argc, char *argv[])
     char ch, comma;
     FILE *input;
 
-
-
     if (argc != 3) {
         printf("Invalid Input!");
         return 1;
