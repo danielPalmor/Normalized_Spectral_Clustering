@@ -55,7 +55,12 @@ static PyObject* fit(PyObject *self, PyObject *args)
     {
         result = jacobi(xMatrix, dim);
     }
-
+    else
+    {
+        freeMatrix(xMatrix);
+        printf("An Error Has Occurred");
+        exit(1);
+    }
 
     if (goal == 1)/* spk */
     {
