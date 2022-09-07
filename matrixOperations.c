@@ -41,7 +41,7 @@ double **matrixAllocation(int numOfPoints, int dim)
  * @param dim The point's dimension
  * @return The sum/subtraction of the matrices
  */
-double **matrixSum(double **firstMatrix,double **secondMatrix,int sign, double numOfPoints, double dim)
+double **matrixSum(double **firstMatrix,double **secondMatrix,int sign, int numOfPoints, int dim)
 {
     int i,j;
     double **matrix = matrixAllocation(numOfPoints, dim);
