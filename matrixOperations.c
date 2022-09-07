@@ -55,31 +55,6 @@ double **matrixSum(double **firstMatrix,double **secondMatrix,int sign, double n
 }
 
 /**
- * This function multiplies two matrices and stores the result in firstMatrix
- * @param firstMatrix The first matrix
- * @param secondMatrix The second matrix
- * @param rowFirstMat The rows of the first matrix
- * @param colFirstRowSecond The columns of the first matrix and the rows of the second matrix
- * @param colSecondMat The columns of the second matrix
- */
-void matrixMult(double **firstMatrix, double **secondMatrix, int rowFirstMat, int colFirstRowSecond, int colSecondMat)
-{
-    int i,j,m,k;
-    double **multMatrix = matrixAllocation(rowFirstMat,colSecondMat);
-    for (i = 0; i < rowFirstMat; i++)
-    {
-        for (j = 0; j < colSecondMat; j++)
-            for (m = 0; m < colFirstRowSecond; m++)
-                multMatrix[i][j] += firstMatrix[i][m]*secondMatrix[m][j];
-
-        /* Updating current row of firstMatrix */
-        for(k = 0; k < colSecondMat; k++)
-            firstMatrix[i][k] = multMatrix[i][k];
-    }
-    freeMatrix(multMatrix);
-}
-
-/**
  * This function sorts a given matrix by it's eigenvalues
  * @param matrix The matrix of eigenvectors. The first row contains the eigenvalues
  * @param numOfPoints The number of points

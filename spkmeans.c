@@ -189,31 +189,28 @@ double **diagonalDegreeMatrix(double **X, int numOfPoints, int dim)
  */
 double **lNorm(double **X, int numOfPoints, int dim)
 {
-    int i;
-    double temp, **lNormMatrix;
+    int i, j;
+    double **lNormMatrix;
+    double **templNormMatrix = matrixAllocation(numOfPoints, numOfPoints);
     double **ddg = diagonalDegreeMatrix(X, numOfPoints, dim);
     double **wam = weightedAdjacencyMatrix(X, numOfPoints,dim);
-    double **eyeMatrix = matrixAllocation(numOfPoints,numOfPoints);
-    double **templNormMatrix = matrixAllocation(numOfPoints,numOfPoints);
+    double **eyeMatrix = matrixAllocation(numOfPoints, numOfPoints);
 
     for (i = 0; i < numOfPoints; i++)
         eyeMatrix[i][i] = 1;
 
-    for (i = 0;  i < numOfPoints ; i++)
+    /* D^(-0.5)*W*D^(-0.5) */
+    for (i = 0; i < numOfPoints; i++)
     {
-        temp = pow(ddg[i][i],-0.5);
-        ddg[i][i] = temp;
-        templNormMatrix[i][i] = temp;
+        for (j = i + 1; j < numOfPoints; j++)
+        {
+            templNormMatrix[i][j] = wam[i][j] * pow(ddg[i][i],-0.5) * pow(ddg[j][j],-0.5);
+            templNormMatrix[j][i] = templNormMatrix[i][j];
+        }
     }
-
-    matrixMult(ddg,wam,numOfPoints,numOfPoints,numOfPoints);/* D^(-0.5) * W */
-    matrixMult(ddg,templNormMatrix,numOfPoints,numOfPoints,numOfPoints);/* D^(-0.5) * W * D^(-0.5) */
-    lNormMatrix = matrixSum(eyeMatrix,ddg,-1, numOfPoints,numOfPoints);/* I - D^(-0.5) * W * D^(-0.5) */
-
+    lNormMatrix = matrixSum(eyeMatrix,templNormMatrix,-1,numOfPoints,numOfPoints);
     freeMatrix(wam);
     freeMatrix(ddg);
-    freeMatrix(eyeMatrix);
-    freeMatrix(templNormMatrix);
     return lNormMatrix;
 }
 
@@ -228,7 +225,7 @@ double **jacobi(double** A, int dim)
     int i, j, iMax, jMax, numOfRotations = 0;
     double theta, t, c, s;
     double tempMax, max, offA, tempOffA;
-    double **P, **V;
+    double **V;
     double **eigenVectorMatrix = matrixAllocation(dim+1, dim);
 
     offA = calcOff(A, dim);
@@ -276,9 +273,16 @@ double **jacobi(double** A, int dim)
         }
         else
         {
-            P = calcP(dim,FALSE, iMax, jMax, c, s);
-            matrixMult(V,P,dim,dim,dim);
-            freeMatrix(P);
+            int k;
+            double iTemp, jTemp;
+            /* V*P */
+            for (k = 0; k < dim; k++)
+            {
+                iTemp = V[k][iMax] * c - V[k][jMax] * s;
+                jTemp = V[k][iMax] * s + V[k][jMax] * c;
+                V[k][iMax] = iTemp;
+                V[k][jMax] = jTemp;
+            }
         }
 
         tempOffA = calcOff(A,dim);
