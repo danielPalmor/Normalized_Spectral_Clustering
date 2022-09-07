@@ -5,7 +5,7 @@ import pandas as pd
 import spectralkmeans
 
 
-def kmeans_pp(k, goal, file_name):
+def normalized_spectral_clustering(k, goal, file_name):
     """
     This function performs the full normalized spectral clustering algorithm
     :param k: The numbers of clusters
@@ -30,6 +30,7 @@ def kmeans_pp(k, goal, file_name):
             print("An Error Has Occurred")
             return 1
 
+        # Performing kmeans++
         rand_indexes = pd.Series(T_as_df.index.values)  # The indexes to choose from randomly
         index = np.random.choice(T_as_df.index.values)  # The chosen index
         indexes = [rand_indexes[index]]  # The list of chosen indexes
@@ -106,7 +107,7 @@ def main(argv):
         print("Invalid Input!")
         return 1
 
-    kmeans_pp(int(argv[1]), argv[2], argv[3])
+    normalized_spectral_clustering(int(argv[1]), argv[2], argv[3])
     return 0
 
 
