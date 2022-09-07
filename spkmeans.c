@@ -211,6 +211,8 @@ double **lNorm(double **X, int numOfPoints, int dim)
     lNormMatrix = matrixSum(eyeMatrix,templNormMatrix,-1,numOfPoints,numOfPoints);
     freeMatrix(wam);
     freeMatrix(ddg);
+    freeMatrix(eyeMatrix);
+    freeMatrix(templNormMatrix);
     return lNormMatrix;
 }
 
