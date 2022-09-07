@@ -330,7 +330,7 @@ double **spectralKmeans(double **X, int numOfPoints, int dim, int *k)
         for (j = 0; j < *k; j++)
             T[i-1][j] = jacobiLNorm[i][j];
 
-    /*Calculating T from U */
+    /* Calculating T from U */
     for (i = 0; i < numOfPoints; i++)
     {
         sum = sqrt(dotProduct(T[i],T[i],*k));
@@ -387,51 +387,25 @@ int main(int argc, char *argv[])
     }
     fclose(input);
 
-
-    if (strlen(argv[1]) == 3)
+    if (strcmp(argv[1],"wam") == 0)
     {
-      if(argv[1][0]=='w' && argv[1][1]=='a' && argv[1][2]=='m')/* wam */
-          result = weightedAdjacencyMatrix(X, numOfPoints, dim);
-
-      else if(argv[1][0]=='d' && argv[1][1]=='d' && argv[1][2]=='g')/* ddg */
-          result = diagonalDegreeMatrix(X, numOfPoints, dim);
-
-      else
-      {
-          freeMatrix(X);
-          printf("Invalid Input!");
-          return 1;
-      }
+        result = weightedAdjacencyMatrix(X, numOfPoints, dim);
     }
-    else if (strlen(argv[1]) == 5)
+    else if(strcmp(argv[1],"ddg") == 0)
     {
-        if(argv[1][0]=='l' && argv[1][1]=='n' && argv[1][2]=='o' && argv[1][3]=='r' && argv[1][4]=='m')/* lnorm */
-            result = lNorm(X, numOfPoints, dim);
-
-        else
-        {
-            freeMatrix(X);
-            printf("Invalid Input!");
-            return 1;
-        }
+        result = diagonalDegreeMatrix(X, numOfPoints, dim);
     }
-    else if (strlen(argv[1]) == 6)
+    else if(strcmp(argv[1],"lnorm") == 0)
     {
-        if (argv[1][0]=='j' && argv[1][1]=='a' && argv[1][2]=='c'
-            && argv[1][3]=='o' && argv[1][4]=='b' && argv[1][5]=='i') /* jacobi */
-        {
-            result = jacobi(X,dim);
-            printMatrix(result,numOfPoints + 1, dim);
-            freeMatrix(result);
-            freeMatrix(X);
-            return 0;
-        }
-        else
-        {
-            freeMatrix(X);
-            printf("Invalid Input!");
-            return 1;
-        }
+        result = lNorm(X, numOfPoints, dim);
+    }
+    else if(strcmp(argv[1],"jacobi") == 0)
+    {
+        result = jacobi(X,dim);
+        printMatrix(result,numOfPoints + 1, dim);
+        freeMatrix(result);
+        freeMatrix(X);
+        return 0;
     }
     else
     {
@@ -439,7 +413,6 @@ int main(int argc, char *argv[])
         printf("Invalid Input!");
         return 1;
     }
-
     printMatrix(result,numOfPoints, numOfPoints);
     freeMatrix(result);
     freeMatrix(X);
