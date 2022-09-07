@@ -49,15 +49,13 @@ double **matrixSum(double **firstMatrix,double **secondMatrix,int sign, double n
     for (i = 0; i < numOfPoints; i++)
     {
         for (j = 0; j < dim; j++)
-        {
             matrix[i][j] = firstMatrix[i][j] + sign*secondMatrix[i][j];
-        }
     }
     return matrix;
 }
 
 /**
- * This function multiplies two matrices
+ * This function multiplies two matrices and stores the result in firstMatrix
  * @param firstMatrix The first matrix
  * @param secondMatrix The second matrix
  * @param rowFirstMat The rows of the first matrix
@@ -73,6 +71,8 @@ void matrixMult(double **firstMatrix, double **secondMatrix, int rowFirstMat, in
         for (j = 0; j < colSecondMat; j++)
             for (m = 0; m < colFirstRowSecond; m++)
                 multMatrix[i][j] += firstMatrix[i][m]*secondMatrix[m][j];
+
+        /* Updating current row of firstMatrix */
         for(k = 0; k < colSecondMat; k++)
             firstMatrix[i][k] = multMatrix[i][k];
     }
@@ -93,6 +93,7 @@ void sortByEigenValues(double **matrix, int numOfPoints, int dim)
     {
         max = matrix[0][i];
         maxCol = i;
+        /* Finding max eigenValue */
         for (j = i+1; j < dim; j++)
         {
             if(matrix[0][j] > max)
@@ -101,6 +102,7 @@ void sortByEigenValues(double **matrix, int numOfPoints, int dim)
                 maxCol = j;
             }
         }
+        /* Swapping the ith column with the maxCol column */
         for (k = 0; k < numOfPoints; k++)
         {
             temp = matrix[k][i];

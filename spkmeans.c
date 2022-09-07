@@ -10,6 +10,12 @@
 #define MAX_ROTATION 100
 #define FALSE 1
 
+/**
+ * This function finds the optimal k according to the Eigengap Heuristic algorithm
+ * @param lNormMatrix The matrix
+ * @param dim The point's dimension
+ * @return The optimal k
+ */
 int eigenGapHeuristic(double **lNormMatrix, int dim)
 {
     int i, k = 1;
@@ -27,6 +33,15 @@ int eigenGapHeuristic(double **lNormMatrix, int dim)
     return k;
 }
 
+/**
+ * This function creates the A' matrix from a given A matrix
+ * @param A The A matrix
+ * @param c The c parameter
+ * @param s The s parameter
+ * @param iMax The row index of the pivot
+ * @param jMax The column index of the pivot
+ * @param dim The point's dimension
+ */
 void createATagFromA(double **A, double c, double s, int iMax, int jMax, int dim)
 {
     int r;
@@ -51,6 +66,13 @@ void createATagFromA(double **A, double c, double s, int iMax, int jMax, int dim
     A[jMax][iMax] = 0;
 }
 
+/**
+ * This function calculates the sum of squares of all
+ * off-diagonal elements of the given matrix
+ * @param matrix The matrix
+ * @param dim The point's dimension
+ * @return The sum of squares of all off-diagonal elements
+ */
 double calcOff(double **matrix, int dim)
 {
     int i,j;
@@ -63,6 +85,16 @@ double calcOff(double **matrix, int dim)
     return result * 2;
 }
 
+/**
+ * This function calculates the P or P transpose matrix
+ * @param dim The point's dimension
+ * @param isT 1 for P, 0 for P transpose
+ * @param iMax The row index of the pivot
+ * @param jMax The column index of the pivot
+ * @param c The c parameter
+ * @param s The s parameter
+ * @return The P or P transpose matrix
+ */
 double **calcP(int dim, int isT, int iMax, int jMax, double c, double s)
 {
     int i;
@@ -79,14 +111,14 @@ double **calcP(int dim, int isT, int iMax, int jMax, double c, double s)
     if (isT == FALSE)
     {
         P[iMax][jMax] = s;
-        if (s == 0)
+        if (s == 0) /* Inserting 0 instead of -0 */
             P[jMax][iMax] = s;
         else
             P[jMax][iMax] = -s;
     }
     else
     {
-        if (s == 0)
+        if (s == 0)/* Inserting 0 instead of -0 */
             P[iMax][jMax] = s;
         else
             P[iMax][jMax] = -s;
@@ -95,6 +127,13 @@ double **calcP(int dim, int isT, int iMax, int jMax, double c, double s)
     return P;
 }
 
+/**
+ * This function calculates the wam from X matrix
+ * @param X The X matrix
+ * @param numOfPoints The number of points
+ * @param dim The point's dimension
+ * @return The wam
+ */
 double **weightedAdjacencyMatrix(double **X, int numOfPoints, int dim)
 {
     int i,j;
@@ -121,7 +160,13 @@ double **weightedAdjacencyMatrix(double **X, int numOfPoints, int dim)
     }
     return wam;
 }
-
+/**
+ * This function calculates the ddg matrix from X matrix
+ * @param X The X matrix
+ * @param numOfPoints The number of points
+ * @param dim The point's dimension
+ * @return The ddg matrix
+ */
 double **diagonalDegreeMatrix(double **X, int numOfPoints, int dim)
 {
     int i;
@@ -135,7 +180,13 @@ double **diagonalDegreeMatrix(double **X, int numOfPoints, int dim)
     return ddg;
 }
 
-
+/**
+ * This function calculates the lNorm matrix from X
+ * @param X The X matrix
+ * @param numOfPoints The number of points
+ * @param dim The point's dimension
+ * @return The lNorm matrix
+ */
 double **lNorm(double **X, int numOfPoints, int dim)
 {
     int i;
@@ -147,6 +198,7 @@ double **lNorm(double **X, int numOfPoints, int dim)
 
     for (i = 0; i < numOfPoints; i++)
         eyeMatrix[i][i] = 1;
+
     for (i = 0;  i < numOfPoints ; i++)
     {
         temp = pow(ddg[i][i],-0.5);
@@ -154,9 +206,9 @@ double **lNorm(double **X, int numOfPoints, int dim)
         templNormMatrix[i][i] = temp;
     }
 
-    matrixMult(ddg,wam,numOfPoints,numOfPoints,numOfPoints);
-    matrixMult(ddg,templNormMatrix,numOfPoints,numOfPoints,numOfPoints);
-    lNormMatrix = matrixSum(eyeMatrix,ddg,-1, numOfPoints,numOfPoints);
+    matrixMult(ddg,wam,numOfPoints,numOfPoints,numOfPoints);/* D^(-0.5) * W */
+    matrixMult(ddg,templNormMatrix,numOfPoints,numOfPoints,numOfPoints);/* D^(-0.5) * W * D^(-0.5) */
+    lNormMatrix = matrixSum(eyeMatrix,ddg,-1, numOfPoints,numOfPoints);/* I - D^(-0.5) * W * D^(-0.5) */
 
     freeMatrix(wam);
     freeMatrix(ddg);
@@ -165,6 +217,12 @@ double **lNorm(double **X, int numOfPoints, int dim)
     return lNormMatrix;
 }
 
+/**
+ * This function performs the Jacobi algorithm from A matrix
+ * @param A The A matrix
+ * @param dim The point's dimension
+ * @return The matrix of eigenvalues and eigenvectors
+ */
 double **jacobi(double** A, int dim)
 {
     int i, j, iMax, jMax, numOfRotations = 0;
@@ -178,6 +236,8 @@ double **jacobi(double** A, int dim)
     {
         max = fabs(A[0][1]);
         iMax = 0, jMax = 1;
+
+        /* Finding the indexes of the pivot*/
         for (i = 0; i < dim ; i++)
         {
             for (j = i+1;  j < dim ; j++)
@@ -191,6 +251,7 @@ double **jacobi(double** A, int dim)
                 }
             }
         }
+        /* If A is diagonal */
         if (A[iMax][jMax] == 0)
         {
             c = 1;
@@ -233,19 +294,23 @@ double **jacobi(double** A, int dim)
         for(j = 0; j < dim; j++)
         {
             if (i == 0)
-            {
                 eigenVectorMatrix[i][j] = A[j][j];
-            }
             else
-            {
                 eigenVectorMatrix[i][j] = V[i-1][j];
-            }
         }
     }
     freeMatrix(V);
     return eigenVectorMatrix;
 }
 
+/**
+ * This function performs the SPK algorithm
+ * @param X The X matrix
+ * @param numOfPoints The number of points
+ * @param dim The point's dimension
+ * @param k The number of clusters
+ * @return The T matrix
+ */
 double **spectralKmeans(double **X, int numOfPoints, int dim, int *k)
 {
     int i,j;
@@ -260,10 +325,12 @@ double **spectralKmeans(double **X, int numOfPoints, int dim, int *k)
         *k = eigenGapHeuristic(jacobiLNorm,numOfPoints);
     T = matrixAllocation(numOfPoints,*k);
 
+    /* Calculating U matrix */
     for (i = 1; i <= numOfPoints; i++)
         for (j = 0; j < *k; j++)
             T[i-1][j] = jacobiLNorm[i][j];
 
+    /*Calculating T from U */
     for (i = 0; i < numOfPoints; i++)
     {
         sum = sqrt(dotProduct(T[i],T[i],*k));
@@ -292,21 +359,20 @@ int main(int argc, char *argv[])
     }
 
     input = fopen(argv[2], "r");
-
-    /* error check */
+    /* Error check */
     if (input == NULL)
     {
         printf("An Error Has Occurred");
         return 1;
     }
 
-    /* calculating dimension */
+    /* Calculating dimension */
     while ((ch = (char) fgetc(input)) != '\n') {
         if (ch == ',')
             dim++;
     }
 
-    /* calculating total number of points */
+    /* Calculating number of points */
     while ((ch = (char) fgetc(input)) != EOF) {
         if (ch == '\n')
             numOfPoints++;
@@ -321,20 +387,15 @@ int main(int argc, char *argv[])
     }
     fclose(input);
 
+
     if (strlen(argv[1]) == 3)
     {
-      if(argv[1][0]=='w' && argv[1][1]=='a' && argv[1][2]=='m')
-      {
+      if(argv[1][0]=='w' && argv[1][1]=='a' && argv[1][2]=='m')/* wam */
           result = weightedAdjacencyMatrix(X, numOfPoints, dim);
-          printMatrix(result, numOfPoints,numOfPoints);
-          freeMatrix(result);
-      }
-      else if(argv[1][0]=='d' && argv[1][1]=='d' && argv[1][2]=='g')
-      {
+
+      else if(argv[1][0]=='d' && argv[1][1]=='d' && argv[1][2]=='g')/* ddg */
           result = diagonalDegreeMatrix(X, numOfPoints, dim);
-          printMatrix(result, numOfPoints,numOfPoints);
-          freeMatrix(result);
-      }
+
       else
       {
           freeMatrix(X);
@@ -344,12 +405,9 @@ int main(int argc, char *argv[])
     }
     else if (strlen(argv[1]) == 5)
     {
-        if(argv[1][0]=='l' && argv[1][1]=='n' && argv[1][2]=='o' && argv[1][3]=='r' && argv[1][4]=='m')
-        {
+        if(argv[1][0]=='l' && argv[1][1]=='n' && argv[1][2]=='o' && argv[1][3]=='r' && argv[1][4]=='m')/* lnorm */
             result = lNorm(X, numOfPoints, dim);
-            printMatrix(result, numOfPoints,numOfPoints);
-            freeMatrix(result);
-        }
+
         else
         {
             freeMatrix(X);
@@ -360,11 +418,13 @@ int main(int argc, char *argv[])
     else if (strlen(argv[1]) == 6)
     {
         if (argv[1][0]=='j' && argv[1][1]=='a' && argv[1][2]=='c'
-            && argv[1][3]=='o' && argv[1][4]=='b' && argv[1][5]=='i')
+            && argv[1][3]=='o' && argv[1][4]=='b' && argv[1][5]=='i') /* jacobi */
         {
             result = jacobi(X,dim);
             printMatrix(result,numOfPoints + 1, dim);
             freeMatrix(result);
+            freeMatrix(X);
+            return 0;
         }
         else
         {
@@ -373,6 +433,15 @@ int main(int argc, char *argv[])
             return 1;
         }
     }
+    else
+    {
+        freeMatrix(X);
+        printf("Invalid Input!");
+        return 1;
+    }
+
+    printMatrix(result,numOfPoints, numOfPoints);
+    freeMatrix(result);
     freeMatrix(X);
     return 0;
 }

@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "vectorOperations.h"
+#include "matrixOperations.h"
 
 #define FALSE 1
 #define TRUE 0
@@ -15,6 +16,10 @@ struct linked_list {
 typedef struct linked_list ELEMENT;
 typedef ELEMENT* LINK;
 
+/**
+ * This function frees memory of the matrix of clusters
+ * @param matrixClusters The matrix
+ */
 void freeMem(LINK matrixClusters)
 {
     if (matrixClusters == NULL)
@@ -23,7 +28,16 @@ void freeMem(LINK matrixClusters)
     free(matrixClusters->next);
 }
 
-int minIndex(int dim ,int pointIndex,int numOfCentroids,double **arrayCentroids ,double **arrayPoints)
+/**
+ * This function finds the index of the centroid which
+ * has the min distance from a given point
+ * @param numOfCentroids The number of centroids
+ * @param matrixCentroids The matrix of centroids
+ * @param point The point
+ * @param dim The point's dimension
+ * @return The index of the chosen centroid
+ */
+int minIndex(int numOfCentroids,double **matrixCentroids ,double *point, int dim)
 {
     double min = -1, tempMin;
     int indexOfMinCentroid = 0;
@@ -31,7 +45,7 @@ int minIndex(int dim ,int pointIndex,int numOfCentroids,double **arrayCentroids 
 
     for (i = 0; i < numOfCentroids; i++)
     {
-        tempMin = calcDistance(arrayCentroids[i],arrayPoints[pointIndex], dim);
+        tempMin = calcDistance(matrixCentroids[i],point, dim);
 
         if (tempMin < min || min == -1)
         {
@@ -42,6 +56,11 @@ int minIndex(int dim ,int pointIndex,int numOfCentroids,double **arrayCentroids 
     return indexOfMinCentroid;
 }
 
+/**
+ * This function adds point to cluster
+ * @param matrixClusters The matrix of clusters
+ * @param points The point to add
+ */
 void addPointToCluster(LINK matrixClusters,int minCentroidIndex,double *arrayPoints)
 {
     LINK head = &matrixClusters[minCentroidIndex];
@@ -63,7 +82,17 @@ void addPointToCluster(LINK matrixClusters,int minCentroidIndex,double *arrayPoi
     head->next = pointToAdd;
 }
 
-
+/**
+ * The kmeans algorithm
+ * @param k The number of clusters
+ * @param maxIter The maximum number of iterations
+ * @param eps The epsilon
+ * @param matrixPoints The matrix of points
+ * @param initialCentroids The matrix of the initial centroids
+ * @param numOfPoints The numbers of points
+ * @param dim The dimension of the matrix
+ * @return The centroids
+ */
 double** kmeans(int k, int maxIter, double eps, double **matrixPoints, double **initialCentroids, int numOfPoints, int dim) {
     int isSmallerThanEpsilon = TRUE;
     int maxIteration, i, minCentroidIndex, clusterSize = 1;
@@ -78,7 +107,7 @@ double** kmeans(int k, int maxIter, double eps, double **matrixPoints, double **
         if(matrixClusters == NULL)
         {
             printf("An Error Has Occurred");
-            free(matrixPoints);
+            freeMatrix(matrixPoints);
             free(initialCentroids);
             exit(1);
         }
@@ -86,14 +115,16 @@ double** kmeans(int k, int maxIter, double eps, double **matrixPoints, double **
 
         for (i = 0; i < numOfPoints; i++)
         {
-            minCentroidIndex = minIndex(dim,i,k,initialCentroids,matrixPoints);
+            /* Finding the index of the centroid which has the min distance from the current point */
+            minCentroidIndex = minIndex(k,initialCentroids,matrixPoints[i], dim);
+            /* Adding the current point to the correct cluster */
             addPointToCluster(matrixClusters,minCentroidIndex,matrixPoints[i]);
         }
 
         for (i = 0; i < k; i++)
         {
             LINK temp1, temp2;
-            if (matrixClusters[i].data == NULL)
+            if (matrixClusters[i].data == NULL) /* Checking if the cluster is empty */
             {
                 printf("An Error Has Occurred");
 
@@ -101,7 +132,7 @@ double** kmeans(int k, int maxIter, double eps, double **matrixPoints, double **
                     freeMem(&matrixClusters[j]);
                 }
                 free(matrixClusters);
-                free(matrixPoints);
+                freeMatrix(matrixPoints);
                 free(initialCentroids);
                 exit(1);
             }
@@ -123,12 +154,13 @@ double** kmeans(int k, int maxIter, double eps, double **matrixPoints, double **
                     freeMem(&matrixClusters[j]);
                 }
                 free(matrixClusters);
-                free(matrixPoints);
+                freeMatrix(matrixPoints);
                 free(initialCentroids);
                 exit(1);
             }
             while(temp1 != NULL)
             {
+                /* avgCentroid+=temp1->data */
                 sumPoints(avgCentroid,avgCentroid, temp1->data, 1 , dim);
                 temp1 = temp1->next;
             }
@@ -149,6 +181,6 @@ double** kmeans(int k, int maxIter, double eps, double **matrixPoints, double **
         free(matrixClusters);
     }
 
-    free(matrixPoints);
+    freeMatrix(matrixPoints);
     return initialCentroids;
 }

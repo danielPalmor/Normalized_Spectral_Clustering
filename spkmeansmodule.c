@@ -8,7 +8,9 @@
 #define EPSILON 0
 #define MAX_ITER 300
 
-
+/**
+ * CAPI of Spectral Kmeans
+ */
 static PyObject* fit(PyObject *self, PyObject *args)
 {
     double **xMatrix;
@@ -33,36 +35,36 @@ static PyObject* fit(PyObject *self, PyObject *args)
         }
     }
 
-    if (goal == 1)
+    if (goal == 1)/* spk */
     {
         result = spectralKmeans(xMatrix, numOfPoints, dim, &k);
     }
-    else if (goal == 2)
+    else if (goal == 2)/* wam */
     {
         result = weightedAdjacencyMatrix(xMatrix, numOfPoints, dim);
     }
-    else if (goal == 3)
+    else if (goal == 3)/* ddg */
     {
         result = diagonalDegreeMatrix(xMatrix, numOfPoints, dim);
     }
-    else if (goal == 4)
+    else if (goal == 4)/* lnorm */
     {
         result = lNorm(xMatrix, numOfPoints, dim);
     }
-    else if (goal == 5)
+    else if (goal == 5)/* jacobi */
     {
         result = jacobi(xMatrix, dim);
     }
 
 
-    if (goal == 1)
+    if (goal == 1)/* spk */
     {
         rowResult = numOfPoints;
         colResult = k;
         py_result = PyList_New((rowResult * colResult) + 1);
         PyList_SetItem(py_result, (rowResult * colResult),PyFloat_FromDouble(k));
     }
-    else if (goal == 5)
+    else if (goal == 5)/* jacobi */
     {
         rowResult = numOfPoints+1;
         colResult = numOfPoints;
@@ -80,7 +82,7 @@ static PyObject* fit(PyObject *self, PyObject *args)
     {
         for (j = 0; j < colResult; j++)
         {
-            PyList_SetItem(py_result, (i*colResult)+j,PyFloat_FromDouble(result[i][j]));
+            PyList_SetItem(py_result, (i*colResult)+j, PyFloat_FromDouble(result[i][j]));
         }
     }
 
@@ -88,7 +90,9 @@ static PyObject* fit(PyObject *self, PyObject *args)
     freeMatrix(xMatrix);
     return Py_BuildValue("O",py_result);
 }
-
+/**
+ * CAPI of Kmeans
+ */
 static PyObject* kmeans_fit(PyObject *self, PyObject *args)
 {
 
