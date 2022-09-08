@@ -58,16 +58,16 @@ int minIndex(int numOfCentroids,double **matrixCentroids ,double *point, int dim
 
 /**
  * This function adds point to cluster
- * @param matrixClusters The matrix of clusters
- * @param points The point to add
+ * @param cluster The link to the cluster
+ * @param point The point to add
  */
-void addPointToCluster(LINK matrixClusters,int minCentroidIndex,double *arrayPoints)
+void addPointToCluster(LINK cluster ,double *point)
 {
-    LINK head = &matrixClusters[minCentroidIndex];
+    LINK head = cluster;
     LINK pointToAdd;
     if (head->data == NULL)
     {
-        head->data = arrayPoints;
+        head->data = point;
         return;
     }
     pointToAdd = (LINK) malloc(sizeof(ELEMENT));
@@ -77,7 +77,7 @@ void addPointToCluster(LINK matrixClusters,int minCentroidIndex,double *arrayPoi
         printf("An Error Has Occurred");
         exit(1);
     }
-    pointToAdd->data = arrayPoints;
+    pointToAdd->data = point;
     pointToAdd->next = head->next;
     head->next = pointToAdd;
 }
@@ -94,11 +94,10 @@ void addPointToCluster(LINK matrixClusters,int minCentroidIndex,double *arrayPoi
  * @return The centroids
  */
 double** kmeans(int k, int maxIter, double eps, double **matrixPoints, double **initialCentroids, int numOfPoints, int dim) {
+    int i, maxIteration, minCentroidIndex, clusterSize = 1;
     int isSmallerThanEpsilon = TRUE;
-    int maxIteration, i, minCentroidIndex, clusterSize = 1;
     LINK matrixClusters;
     double *avgCentroid;
-
 
     for (maxIteration = 0; maxIteration < maxIter && isSmallerThanEpsilon == TRUE; maxIteration++)
     {
@@ -118,7 +117,7 @@ double** kmeans(int k, int maxIter, double eps, double **matrixPoints, double **
             /* Finding the index of the centroid which has the min distance from the current point */
             minCentroidIndex = minIndex(k,initialCentroids,matrixPoints[i], dim);
             /* Adding the current point to the correct cluster */
-            addPointToCluster(matrixClusters,minCentroidIndex,matrixPoints[i]);
+            addPointToCluster(&matrixClusters[minCentroidIndex],matrixPoints[i]);
         }
 
         for (i = 0; i < k; i++)
@@ -160,7 +159,7 @@ double** kmeans(int k, int maxIter, double eps, double **matrixPoints, double **
             }
             while(temp1 != NULL)
             {
-                /* avgCentroid+=temp1->data */
+                /* avgCentroid += temp1->data */
                 sumPoints(avgCentroid,avgCentroid, temp1->data, 1 , dim);
                 temp1 = temp1->next;
             }

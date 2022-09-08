@@ -209,6 +209,7 @@ double **lNorm(double **X, int numOfPoints, int dim)
         }
     }
     lNormMatrix = matrixSum(eyeMatrix,templNormMatrix,-1,numOfPoints,numOfPoints);
+
     freeMatrix(wam);
     freeMatrix(ddg);
     freeMatrix(eyeMatrix);
@@ -236,7 +237,7 @@ double **jacobi(double** A, int dim)
         max = fabs(A[0][1]);
         iMax = 0, jMax = 1;
 
-        /* Finding the indexes of the pivot*/
+        /* Finding the indexes of the pivot */
         for (i = 0; i < dim ; i++)
         {
             for (j = i+1;  j < dim ; j++)

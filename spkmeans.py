@@ -10,7 +10,7 @@ def normalized_spectral_clustering(k, goal, file_name):
     This function performs the full normalized spectral clustering algorithm
     :param k: The numbers of clusters
     :param goal: The goal
-    :param file_name: The file that contains the points
+    :param file_name: The path to the file that contains the points
     :return: 0 for success, 1 for failure
     """
     np.random.seed(0)
