@@ -27,7 +27,7 @@ double dotProduct(double *point1, double *point2, int dim)
  * @param sign 1 for sum , -1 for subtraction
  * @param dim  The point's dimension
  */
-void sumPoints(double* sum, double *point1,double *point2, int sign, int dim)
+void sumPoints(double *sum, double *point1,double *point2, int sign, int dim)
 {
     int i;
     for (i = 0; i < dim; i++)
@@ -40,7 +40,7 @@ void sumPoints(double* sum, double *point1,double *point2, int sign, int dim)
  * @param dim The point's dimension
  * @return The sum of the scalars
  */
-double sumScalars(double* point, int dim)
+double sumScalars(double *point, int dim)
 {
     int i;
     double sum = 0;
@@ -71,8 +71,8 @@ void multScalar(double *point, double scalar, int dim)
  */
 double calcDistance(double *point1,double *point2, int dim)
 {
-    double *sub = calloc(dim,sizeof(double));
     double dot;
+    double *sub = calloc(dim,sizeof(double));
     if (sub == NULL)
     {
         printf("An Error Has Occurred");

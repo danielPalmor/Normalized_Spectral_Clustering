@@ -93,7 +93,7 @@ void addPointToCluster(LINK cluster ,double *point)
  * @param dim The dimension of the matrix
  * @return The centroids
  */
-double** kmeans(int k, int maxIter, double eps, double **matrixPoints, double **initialCentroids, int numOfPoints, int dim) {
+double **kmeans(int k, int maxIter, double eps, double **matrixPoints, double **initialCentroids, int numOfPoints, int dim) {
     int i, maxIteration, minCentroidIndex, clusterSize = 1;
     int isSmallerThanEpsilon = TRUE;
     LINK matrixClusters;

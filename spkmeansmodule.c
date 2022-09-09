@@ -96,7 +96,7 @@ static PyObject* fit(PyObject *self, PyObject *args)
     return Py_BuildValue("O",py_result);
 }
 /**
- * CAPI of Kmeans
+ * CAPI of kmeans
  */
 static PyObject* kmeans_fit(PyObject *self, PyObject *args)
 {
@@ -104,7 +104,7 @@ static PyObject* kmeans_fit(PyObject *self, PyObject *args)
     PyObject* matrix_points;
     PyObject* initial_centroids;
 
-    int i, k, dim, numOfPoints;
+    int i, j, k, dim, numOfPoints;
     double **cMatrix, **cMatrixInitialCentroids;
 
     double **result;
@@ -119,7 +119,6 @@ static PyObject* kmeans_fit(PyObject *self, PyObject *args)
 
     for (i = 0; i < numOfPoints; i++)
     {
-        int j;
         for (j = 0; j < dim; j++){
             cMatrix[i][j] = PyFloat_AsDouble(PyList_GetItem(matrix_points, j+(dim*i)));
         }
@@ -127,7 +126,6 @@ static PyObject* kmeans_fit(PyObject *self, PyObject *args)
 
     for (i = 0; i < k; i++)
     {
-        int j;
         for (j = 0; j < dim; j++){
             cMatrixInitialCentroids[i][j] = PyFloat_AsDouble(PyList_GetItem(initial_centroids, j+(dim*i)));
         }
@@ -139,7 +137,6 @@ static PyObject* kmeans_fit(PyObject *self, PyObject *args)
     centroids =  PyList_New(k*dim);
     for (i = 0; i < k; i++)
     {
-        int j;
         for (j = 0; j < dim; j++)
         {
             PyList_SetItem(centroids, (i*dim)+j,PyFloat_FromDouble(result[i][j]));

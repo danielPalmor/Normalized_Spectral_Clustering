@@ -9,6 +9,7 @@
 #define EPSILON 0.00001
 #define MAX_ROTATION 100
 #define FALSE 1
+#define TRUE 0
 
 /**
  * This function finds the optimal k according to the Eigengap Heuristic algorithm
@@ -223,13 +224,12 @@ double **lNorm(double **X, int numOfPoints, int dim)
  * @param dim The point's dimension
  * @return The matrix of eigenvalues and eigenvectors
  */
-double **jacobi(double** A, int dim)
+double **jacobi(double **A, int dim)
 {
     int i, j, iMax, jMax, numOfRotations = 0;
     double theta, t, c, s;
     double tempMax, max, offA, tempOffA;
-    double **V;
-    double **eigenVectorMatrix = matrixAllocation(dim+1, dim);
+    double **V, **eigenVectorMatrix = matrixAllocation(dim+1, dim);
 
     offA = calcOff(A, dim);
     while (numOfRotations < MAX_ROTATION)
@@ -355,7 +355,7 @@ double **spectralKmeans(double **X, int numOfPoints, int dim, int *k)
 
 int main(int argc, char *argv[])
 {
-    int i,j, dim = 1, numOfPoints = 1;
+    int i, j, dim = 1, numOfPoints = 1;
     double point, **X, **result;
     char ch, comma;
     FILE *input;
@@ -394,19 +394,19 @@ int main(int argc, char *argv[])
     }
     fclose(input);
 
-    if (strcmp(argv[1],"wam") == 0)
+    if (strcmp(argv[1],"wam") == TRUE)
     {
         result = weightedAdjacencyMatrix(X, numOfPoints, dim);
     }
-    else if(strcmp(argv[1],"ddg") == 0)
+    else if(strcmp(argv[1],"ddg") == TRUE)
     {
         result = diagonalDegreeMatrix(X, numOfPoints, dim);
     }
-    else if(strcmp(argv[1],"lnorm") == 0)
+    else if(strcmp(argv[1],"lnorm") == TRUE)
     {
         result = lNorm(X, numOfPoints, dim);
     }
-    else if(strcmp(argv[1],"jacobi") == 0)
+    else if(strcmp(argv[1],"jacobi") == TRUE)
     {
         result = jacobi(X,dim);
         printMatrix(result,numOfPoints + 1, dim);
