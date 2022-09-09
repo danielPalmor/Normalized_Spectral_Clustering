@@ -33,28 +33,6 @@ double **matrixAllocation(int numOfPoints, int dim)
 }
 
 /**
- * This functions sums/subtracts two matrices
- * @param firstMatrix The first matrix
- * @param secondMatrix The second matrix
- * @param sign 1 for sum , -1 for subtraction
- * @param numOfPoints The number of points
- * @param dim The point's dimension
- * @return The sum/subtraction of the matrices
- */
-double **matrixSum(double **firstMatrix,double **secondMatrix,int sign, int numOfPoints, int dim)
-{
-    int i,j;
-    double **matrix = matrixAllocation(numOfPoints, dim);
-
-    for (i = 0; i < numOfPoints; i++)
-    {
-        for (j = 0; j < dim; j++)
-            matrix[i][j] = firstMatrix[i][j] + sign*secondMatrix[i][j];
-    }
-    return matrix;
-}
-
-/**
  * This function sorts a given matrix by it's eigenvalues
  * @param matrix The matrix of eigenvectors. The first row contains the eigenvalues
  * @param numOfPoints The number of points

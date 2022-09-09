@@ -191,30 +191,23 @@ double **diagonalDegreeMatrix(double **X, int numOfPoints, int dim)
 double **lNorm(double **X, int numOfPoints, int dim)
 {
     int i, j;
-    double **lNormMatrix;
-    double **templNormMatrix = matrixAllocation(numOfPoints, numOfPoints);
     double **ddg = diagonalDegreeMatrix(X, numOfPoints, dim);
     double **wam = weightedAdjacencyMatrix(X, numOfPoints,dim);
-    double **eyeMatrix = matrixAllocation(numOfPoints, numOfPoints);
+    double **lNormMatrix = matrixAllocation(numOfPoints, numOfPoints);
 
-    for (i = 0; i < numOfPoints; i++)
-        eyeMatrix[i][i] = 1;
-
-    /* D^(-0.5)*W*D^(-0.5) */
+    /* I - D^(-0.5)*W*D^(-0.5) */
     for (i = 0; i < numOfPoints; i++)
     {
+        lNormMatrix[i][i] = 1;
         for (j = i + 1; j < numOfPoints; j++)
         {
-            templNormMatrix[i][j] = wam[i][j] * pow(ddg[i][i],-0.5) * pow(ddg[j][j],-0.5);
-            templNormMatrix[j][i] = templNormMatrix[i][j];
+            lNormMatrix[i][j] = -(wam[i][j] * pow(ddg[i][i],-0.5) * pow(ddg[j][j],-0.5));
+            lNormMatrix[j][i] = lNormMatrix[i][j];
         }
     }
-    lNormMatrix = matrixSum(eyeMatrix,templNormMatrix,-1,numOfPoints,numOfPoints);
 
     freeMatrix(wam);
     freeMatrix(ddg);
-    freeMatrix(eyeMatrix);
-    freeMatrix(templNormMatrix);
     return lNormMatrix;
 }
 
