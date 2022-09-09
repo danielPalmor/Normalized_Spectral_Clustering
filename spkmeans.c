@@ -13,18 +13,18 @@
 
 /**
  * This function finds the optimal k according to the Eigengap Heuristic algorithm
- * @param lNormMatrix The matrix
+ * @param matrix The eigenvector matrix with its eigenvalues in the first row
  * @param dim The point's dimension
  * @return The optimal k
  */
-int eigenGapHeuristic(double **lNormMatrix, int dim)
+int eigenGapHeuristic(double **matrix, int dim)
 {
     int i, k = 1;
-    double tempMax, max = fabs(lNormMatrix[0][0] - lNormMatrix[0][1]);
+    double tempMax, max = fabs(matrix[0][0] - matrix[0][1]);
 
     for (i = 1; i < floor(dim / 2.0); i++)
     {
-        tempMax = fabs(lNormMatrix[0][i] - lNormMatrix[0][i+1]);
+        tempMax = fabs(matrix[0][i] - matrix[0][i+1]);
         if (tempMax > max)
         {
             max = tempMax;
@@ -70,7 +70,7 @@ void createATagFromA(double **A, double c, double s, int iMax, int jMax, int dim
 /**
  * This function calculates the sum of squares of all
  * off-diagonal elements of the given matrix
- * @param matrix The matrix
+ * @param matrix The symmetric matrix
  * @param dim The point's dimension
  * @return The sum of squares of all off-diagonal elements
  */
