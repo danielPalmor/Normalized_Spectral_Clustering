@@ -320,7 +320,6 @@ double **spectralKmeans(double **X, int numOfPoints, int dim, int *k)
 
     sortByEigenValues(jacobiLNorm,numOfPoints + 1 ,numOfPoints);
 
-
     if (*k == 0)
         *k = eigenGapHeuristic(jacobiLNorm,numOfPoints);
     T = matrixAllocation(numOfPoints,*k);
