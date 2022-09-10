@@ -95,6 +95,7 @@ static PyObject* fit(PyObject *self, PyObject *args)
     freeMatrix(xMatrix);
     return Py_BuildValue("O",py_result);
 }
+
 /**
  * CAPI of kmeans
  */
