@@ -6,8 +6,8 @@ setup(
     packages=find_packages(where='.'),
     install_requires=['invoke'],
     classifiers=["Programming Language :: Python:: Implementation :: CPython"],
-    headers=["spkmeans.h", "matrixOperations.h", "vectorOperations.h"],
     ext_modules=[Extension("spectralkmeans", ["spkmeansmodule.c", "spkmeans.c",
                                               "kmeans.c", "matrixOperations.c",
                                               "vectorOperations.c"])],
+    headers=["spkmeans.h", "matrixOperations.h", "vectorOperations.h"],
 )
