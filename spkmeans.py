@@ -42,7 +42,8 @@ def normalized_spectral_clustering(k, goal, file_name):
             list_of_p = np.array([])
             for point in T_as_df.values:
                 # Calculating the min distance of the current point from all centroids
-                d_point = min(np.dot(point - centroid, point - centroid) for centroid in initial_centroids)
+                d_point = min(np.dot(point - centroid, point - centroid)
+                              for centroid in initial_centroids)
                 list_of_p = np.append(list_of_p, d_point)
             list_of_p = list_of_p / np.sum(list_of_p)  # Calculating the probabilities
             i += 1
@@ -57,8 +58,10 @@ def normalized_spectral_clustering(k, goal, file_name):
         initial_centroids_as_list = np.reshape(initial_centroids, newshape=rows * columns)
         initial_centroids_as_list = [scalar for scalar in initial_centroids_as_list]
 
-        the_centroids = spectralkmeans.kmeans_fit(k, result, initial_centroids_as_list,
-                                                  len(initial_centroids[0]), len(T_as_df.values))
+        the_centroids = spectralkmeans.kmeans_fit(k, result,
+                                                  initial_centroids_as_list,
+                                                  len(initial_centroids[0]),
+                                                  len(T_as_df.values))
         # Printing the chosen indexes
         for i in range(len(indexes)):
             if i == len(indexes) - 1:
