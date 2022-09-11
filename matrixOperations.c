@@ -12,21 +12,22 @@ double **matrixAllocation(int numOfPoints, int dim)
 {
     int i;
     double **matrix, *array;
-    matrix = calloc(numOfPoints, sizeof(double*));
-    if(matrix == NULL)
+    matrix = calloc(numOfPoints, sizeof(double *));
+    if (matrix == NULL)
     {
         printf("An Error Has Occurred");
         exit(1);
     }
 
     array = calloc(numOfPoints * dim, sizeof(double));
-    if(array == NULL)
+    if (array == NULL)
     {
         printf("An Error Has Occurred");
         free(matrix);
         exit(1);
     }
-    for (i = 0; i < numOfPoints; i++) {
+    for (i = 0; i < numOfPoints; i++)
+    {
         matrix[i] = array + i * dim;
     }
     return matrix;
@@ -47,9 +48,9 @@ void sortByEigenValues(double **matrix, int numOfPoints, int dim)
         max = matrix[0][i];
         maxCol = i;
         /* Finding max eigenValue */
-        for (j = i+1; j < dim; j++)
+        for (j = i + 1; j < dim; j++)
         {
-            if(matrix[0][j] > max)
+            if (matrix[0][j] > max)
             {
                 max = matrix[0][j];
                 maxCol = j;
@@ -83,10 +84,10 @@ void freeMatrix(double **matrix)
  */
 void printMatrix(double **matrix, int numOfPoints, int dim)
 {
-    int i,j;
+    int i, j;
     for (i = 0; i < numOfPoints; i++)
     {
-        for (j = 0; j < dim ; j++)
+        for (j = 0; j < dim; j++)
         {
             if (j == dim - 1)
                 printf("%.4f\n", matrix[i][j]);

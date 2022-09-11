@@ -11,7 +11,7 @@
 /**
  * CAPI of Spectral Kmeans
  */
-static PyObject* fit(PyObject *self, PyObject *args)
+static PyObject *fit(PyObject *self, PyObject *args)
 {
     double **xMatrix;
     double **result;
@@ -19,19 +19,22 @@ static PyObject* fit(PyObject *self, PyObject *args)
     int k, goal, numOfPoints, dim;
     int i, j, rowResult, colResult;
 
-    PyObject* py_x_matrix;
-    PyObject* py_result;
+    PyObject * py_x_matrix;
+    PyObject * py_result;
 
 
-    if (!PyArg_ParseTuple(args, "Oiiii", &py_x_matrix, &goal, &numOfPoints, &dim, &k))
+    if (!PyArg_ParseTuple(args, "Oiiii", &py_x_matrix, &goal, &numOfPoints,
+                          &dim, &k))
         return NULL;
 
     xMatrix = matrixAllocation(numOfPoints, dim);
 
     for (i = 0; i < numOfPoints; i++)
     {
-        for (j = 0; j < dim; j++){
-            xMatrix[i][j] = PyFloat_AsDouble(PyList_GetItem(py_x_matrix, j+(dim*i)));
+        for (j = 0; j < dim; j++)
+        {
+            xMatrix[i][j] = PyFloat_AsDouble(
+                    PyList_GetItem(py_x_matrix, j + (dim * i)));
         }
     }
 
@@ -67,11 +70,12 @@ static PyObject* fit(PyObject *self, PyObject *args)
         rowResult = numOfPoints;
         colResult = k;
         py_result = PyList_New((rowResult * colResult) + 1);
-        PyList_SetItem(py_result, (rowResult * colResult),PyFloat_FromDouble(k));
+        PyList_SetItem(py_result, (rowResult * colResult),
+                       PyFloat_FromDouble(k));
     }
     else if (goal == 5)/* jacobi */
     {
-        rowResult = numOfPoints+1;
+        rowResult = numOfPoints + 1;
         colResult = numOfPoints;
         py_result = PyList_New(rowResult * colResult);
     }
@@ -87,32 +91,34 @@ static PyObject* fit(PyObject *self, PyObject *args)
     {
         for (j = 0; j < colResult; j++)
         {
-            PyList_SetItem(py_result, (i*colResult)+j, PyFloat_FromDouble(result[i][j]));
+            PyList_SetItem(py_result, (i * colResult) + j,
+                           PyFloat_FromDouble(result[i][j]));
         }
     }
 
     freeMatrix(result);
     freeMatrix(xMatrix);
-    return Py_BuildValue("O",py_result);
+    return Py_BuildValue("O", py_result);
 }
 
 /**
  * CAPI of kmeans
  */
-static PyObject* kmeans_fit(PyObject *self, PyObject *args)
+static PyObject *kmeans_fit(PyObject *self, PyObject *args)
 {
 
-    PyObject* matrix_points;
-    PyObject* initial_centroids;
+    PyObject * matrix_points;
+    PyObject * initial_centroids;
 
     int i, j, k, dim, numOfPoints;
     double **cMatrix, **cMatrixInitialCentroids;
 
     double **result;
-    PyObject *centroids;
+    PyObject * centroids;
 
 
-    if (!PyArg_ParseTuple(args, "iOOii", &k, &matrix_points, &initial_centroids, &dim, &numOfPoints))
+    if (!PyArg_ParseTuple(args, "iOOii", &k, &matrix_points, &initial_centroids,
+                          &dim, &numOfPoints))
         return NULL;
 
     cMatrix = matrixAllocation(numOfPoints, dim);
@@ -120,51 +126,51 @@ static PyObject* kmeans_fit(PyObject *self, PyObject *args)
 
     for (i = 0; i < numOfPoints; i++)
     {
-        for (j = 0; j < dim; j++){
-            cMatrix[i][j] = PyFloat_AsDouble(PyList_GetItem(matrix_points, j+(dim*i)));
+        for (j = 0; j < dim; j++)
+        {
+            cMatrix[i][j] = PyFloat_AsDouble(
+                    PyList_GetItem(matrix_points, j + (dim * i)));
         }
     }
 
     for (i = 0; i < k; i++)
     {
-        for (j = 0; j < dim; j++){
-            cMatrixInitialCentroids[i][j] = PyFloat_AsDouble(PyList_GetItem(initial_centroids, j+(dim*i)));
+        for (j = 0; j < dim; j++)
+        {
+            cMatrixInitialCentroids[i][j] = PyFloat_AsDouble(
+                    PyList_GetItem(initial_centroids, j + (dim * i)));
         }
     }
 
     result = kmeans(k, MAX_ITER, EPSILON, cMatrix, cMatrixInitialCentroids,
                     numOfPoints, dim);
 
-    centroids =  PyList_New(k*dim);
+    centroids = PyList_New(k * dim);
     for (i = 0; i < k; i++)
     {
         for (j = 0; j < dim; j++)
         {
-            PyList_SetItem(centroids, (i*dim)+j,PyFloat_FromDouble(result[i][j]));
+            PyList_SetItem(centroids, (i * dim) + j,
+                           PyFloat_FromDouble(result[i][j]));
         }
     }
 
     freeMatrix(cMatrixInitialCentroids);
-    return Py_BuildValue("O",centroids);
+    return Py_BuildValue("O", centroids);
 }
 
-static PyMethodDef kmeansMethods[] = {{"fit", (PyCFunction) fit, METH_VARARGS,PyDoc_STR("")},
-                                      {"kmeans_fit", (PyCFunction) kmeans_fit, METH_VARARGS,PyDoc_STR("")},
-                                      {NULL, NULL, 0, NULL}
-};
+static PyMethodDef
+kmeansMethods[] = {{"fit", (PyCFunction) fit, METH_VARARGS, PyDoc_STR("")},
+                   {"kmeans_fit", (PyCFunction) kmeans_fit,METH_VARARGS,
+                    PyDoc_STR("")},
+                   {NULL, NULL, 0, NULL}};
 
-static struct PyModuleDef moduleDef = {
-        PyModuleDef_HEAD_INIT,
-        "spectralkmeans",
-        NULL,
-        -1,
-        kmeansMethods
-};
+static struct PyModuleDef moduleDef = {PyModuleDef_HEAD_INIT, "spectralkmeans",
+                                       NULL, -1, kmeansMethods};
 
-PyMODINIT_FUNC
-PyInit_spectralkmeans(void)
+PyMODINIT_FUNC PyInit_spectralkmeans(void)
 {
-    PyObject *m;
+    PyObject * m;
     m = PyModule_Create(&moduleDef);
     if (!m)
         return NULL;

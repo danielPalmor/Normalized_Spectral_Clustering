@@ -8,13 +8,14 @@
 
 typedef double *DATA;
 
-struct linked_list {
+struct linked_list
+{
     DATA data;
     struct linked_list *next;
 };
 
 typedef struct linked_list ELEMENT;
-typedef ELEMENT* LINK;
+typedef ELEMENT *LINK;
 
 /**
  * This function frees memory of the matrix of clusters
@@ -37,15 +38,14 @@ void freeMem(LINK matrixClusters)
  * @param dim The point's dimension
  * @return The index of the chosen centroid
  */
-int minIndex(int numOfCentroids,double **matrixCentroids ,double *point, int dim)
+int minIndex(int numOfCentroids, double **matrixCentroids, double *point, int dim)
 {
+    int i, indexOfMinCentroid = 0;
     double min = -1, tempMin;
-    int indexOfMinCentroid = 0;
-    int i;
 
     for (i = 0; i < numOfCentroids; i++)
     {
-        tempMin = calcDistance(matrixCentroids[i],point, dim);
+        tempMin = calcDistance(matrixCentroids[i], point, dim);
 
         if (tempMin < min || min == -1)
         {
@@ -61,10 +61,11 @@ int minIndex(int numOfCentroids,double **matrixCentroids ,double *point, int dim
  * @param cluster The link to the cluster
  * @param point The point to add
  */
-void addPointToCluster(LINK cluster ,double *point)
+void addPointToCluster(LINK cluster, double *point)
 {
     LINK head = cluster;
     LINK pointToAdd;
+
     if (head->data == NULL)
     {
         head->data = point;
@@ -93,17 +94,18 @@ void addPointToCluster(LINK cluster ,double *point)
  * @param dim The dimension of the matrix
  * @return The centroids
  */
-double **kmeans(int k, int maxIter, double eps, double **matrixPoints, double **initialCentroids, int numOfPoints, int dim) {
-    int i, maxIteration, minCentroidIndex, clusterSize = 1;
+double **kmeans(int k, int maxIter, double eps, double **matrixPoints,
+                double **initialCentroids, int numOfPoints, int dim)
+{
+    int i, j, iter, minCentroidIndex, clusterSize = 1;
     int isSmallerThanEpsilon = TRUE;
-    LINK matrixClusters;
     double *avgCentroid;
+    LINK matrixClusters;
 
-    for (maxIteration = 0; maxIteration < maxIter && isSmallerThanEpsilon == TRUE; maxIteration++)
+    for (iter = 0; iter < maxIter && isSmallerThanEpsilon == TRUE; iter++)
     {
-        int j;
         matrixClusters = calloc(k, sizeof(ELEMENT));
-        if(matrixClusters == NULL)
+        if (matrixClusters == NULL)
         {
             printf("An Error Has Occurred");
             freeMatrix(matrixPoints);
@@ -115,9 +117,9 @@ double **kmeans(int k, int maxIter, double eps, double **matrixPoints, double **
         for (i = 0; i < numOfPoints; i++)
         {
             /* Finding the index of the centroid which has the min distance from the current point */
-            minCentroidIndex = minIndex(k,initialCentroids,matrixPoints[i], dim);
+            minCentroidIndex = minIndex(k, initialCentroids, matrixPoints[i], dim);
             /* Adding the current point to the correct cluster */
-            addPointToCluster(&matrixClusters[minCentroidIndex],matrixPoints[i]);
+            addPointToCluster(&matrixClusters[minCentroidIndex], matrixPoints[i]);
         }
 
         for (i = 0; i < k; i++)
@@ -127,7 +129,8 @@ double **kmeans(int k, int maxIter, double eps, double **matrixPoints, double **
             {
                 printf("An Error Has Occurred");
 
-                for (j = 0; j < k; ++j) {
+                for (j = 0; j < k; j++)
+                {
                     freeMem(&matrixClusters[j]);
                 }
                 free(matrixClusters);
@@ -138,18 +141,19 @@ double **kmeans(int k, int maxIter, double eps, double **matrixPoints, double **
             temp1 = &matrixClusters[i];
             temp2 = &matrixClusters[i];
 
-            while(temp2->next != NULL)
+            while (temp2->next != NULL)
             {
                 clusterSize++;
                 temp2 = temp2->next;
             }
 
-            avgCentroid = calloc(dim,sizeof(double));
+            avgCentroid = calloc(dim, sizeof(double));
             if (avgCentroid == NULL)
             {
                 printf("An Error Has Occurred");
 
-                for (j = 0; j < k; ++j) {
+                for (j = 0; j < k; j++)
+                {
                     freeMem(&matrixClusters[j]);
                 }
                 free(matrixClusters);
@@ -157,24 +161,26 @@ double **kmeans(int k, int maxIter, double eps, double **matrixPoints, double **
                 free(initialCentroids);
                 exit(1);
             }
-            while(temp1 != NULL)
+            while (temp1 != NULL)
             {
                 /* avgCentroid += temp1->data */
-                sumPoints(avgCentroid,avgCentroid, temp1->data, 1 , dim);
+                sumPoints(avgCentroid, avgCentroid, temp1->data, 1, dim);
                 temp1 = temp1->next;
             }
-            multScalar(avgCentroid,1.0 / clusterSize, dim);
+            multScalar(avgCentroid, 1.0 / clusterSize, dim);
 
-            if (calcDistance(avgCentroid,initialCentroids[i], dim) > eps)
+            if (calcDistance(avgCentroid, initialCentroids[i], dim) > eps)
                 isSmallerThanEpsilon = TRUE;
 
-            for (j = 0; j < dim; ++j) {
+            for (j = 0; j < dim; j++)
+            {
                 initialCentroids[i][j] = avgCentroid[j];
             }
             free(avgCentroid);
             clusterSize = 1;
         }
-        for (j = 0; j < k; ++j) {
+        for (j = 0; j < k; j++)
+        {
             freeMem(&matrixClusters[j]);
         }
         free(matrixClusters);
