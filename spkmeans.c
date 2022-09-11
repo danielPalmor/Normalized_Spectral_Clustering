@@ -116,7 +116,8 @@ double **calcP(int dim, int isT, int iMax, int jMax, double c, double s)
             P[jMax][iMax] = s;
         else
             P[jMax][iMax] = -s;
-    } else
+    }
+    else
     {
         if (s == 0)/* Inserting 0 instead of -0 */
             P[iMax][jMax] = s;
@@ -249,7 +250,8 @@ double **jacobi(double **A, int dim)
         {
             c = 1;
             s = 0;
-        } else
+        }
+        else
         {
             theta = (A[jMax][jMax] - A[iMax][iMax]) / (2.0 * A[iMax][jMax]);
             if (theta >= 0)
@@ -265,7 +267,8 @@ double **jacobi(double **A, int dim)
         if (numOfRotations == 0)
         {
             V = calcP(dim, FALSE, iMax, jMax, c, s);
-        } else
+        }
+        else
         {
             int k;
             double iTemp, jTemp;

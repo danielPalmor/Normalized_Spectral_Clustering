@@ -105,11 +105,6 @@ def main(argv):
         print("Invalid Input!")
         return 1
 
-    if argv[2] != "wam" and argv[2] != "ddg" and argv[2] != "lnorm" \
-            and argv[2] != "jacobi" and argv[2] != "spk":
-        print("Invalid Input!")
-        return 1
-
     normalized_spectral_clustering(int(argv[1]), argv[2], argv[3])
     return 0
 
