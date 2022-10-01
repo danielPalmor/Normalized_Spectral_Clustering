@@ -13,6 +13,7 @@ In Terminal run the following command:
 bash comp.sh
 
 # Testing Algorithm
-In Terminal run the following command:
+In Terminal run the following command
+
 bash tester.sh testfiles c|py|both yes|no yes|no yes|no
 
