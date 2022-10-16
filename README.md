@@ -12,7 +12,7 @@ In Terminal run the following command:
 
 # Testing Algorithm
 In Terminal run the following command:  
-`bash tester.sh testfiles \<interface> \<regular> \<leaks> \<efficiency>`
+`bash tester.sh testfiles <interface> <regular> <leaks> <efficiency>`
 
 **Syntax**:  
 - interface [c|py|both]: Specifies the interface you want to test.
